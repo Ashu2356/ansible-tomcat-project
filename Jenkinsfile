@@ -2,16 +2,7 @@ pipeline {
     agent any
 
     stages {
-        stage('Clone Java Project') {
-            steps {
-                sh '''
-                    rm -rf project 
-                    git clone https://github.com/Ashu2356/project.git
-                '''
-            }
-        }
-
-        stage('Run Ansible for DEV') {
+        stage('Run Ansible Playbook') {
             steps {
                 sh '''
                     ansible-playbook -i inventory/build_and_deploy.yml
