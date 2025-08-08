@@ -5,7 +5,8 @@ pipeline {
         stage('Run Ansible Playbook') {
             steps {
                 sh '''
-                    ansible-playbook -i inventory/build_and_deploy.yml
+                    ansible-playbook -i inventory/hosts.ini inventory/build_and_deploy.yml
+
                 '''
             }
         }
