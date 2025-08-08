@@ -32,7 +32,7 @@
   tasks:
     - name: Install Java
       package:
-        name: java-11-amazon-corretto
+        name: java-17-amazon-corretto
         state: present
 
     - name: Install unzip
