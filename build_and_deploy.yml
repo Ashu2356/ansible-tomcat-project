@@ -4,7 +4,7 @@
   vars:
     repo_url: "https://github.com/Ashu2356/project.git"
     repo_dest: "{{ lookup('env','WORKSPACE') }}/project"
-    war_file_name: "LoginWebApp.war"        # Change if your WAR file name is different
+    war_file_name: "LoginWebApp.war"        # Change if your WAR name is different
     target_host: "172.31.38.202"            # Replace with your target host IP
     target_tomcat_path: "/opt/tomcat/webapps"
 
@@ -13,8 +13,9 @@
       git:
         repo: "{{ repo_url }}"
         dest: "{{ repo_dest }}"
-        version: "master"
+        version: "master"       # Use 'master' branch as per your repo
         force: yes
+        depth: 0
 
     - name: Show repo_dest path
       debug:
