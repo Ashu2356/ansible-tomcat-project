@@ -2,8 +2,8 @@
 - name: Build WAR on workstation and deploy to target server
   hosts: localhost
   vars:
-    repo_url: "https://github.com/Ashu2356/project.git"   
-    repo_dest: "/mnt/project" 
+   git branch: 'master', url: 'https://github.com/Ashu2356/ansible-tomcat-project.git'
+   repo_dest: "/mnt/project" 
     war_file_name: "Project.war"        # Adjust if your WAR name is different
     target_host: "172.31.38.202"        # Replace with your target host/IP
     target_tomcat_path: "/opt/tomcat/webapps"
