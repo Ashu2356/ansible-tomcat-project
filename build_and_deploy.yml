@@ -3,9 +3,9 @@
   hosts: localhost
   vars:
     repo_url: "https://github.com/Ashu2356/project.git"
-    repo_dest: "tmp/project"
-    war_file_name: "Project.war"        # Adjust if your WAR name is different
-    target_host: "172.31.38.202"        # Replace with your target host/IP
+    repo_dest: "{{ lookup('env','WORKSPACE') }}/project"
+    war_file_name: "LoginWebApp.war"        # Change if your WAR file name is different
+    target_host: "172.31.38.202"            # Replace with your target host IP
     target_tomcat_path: "/opt/tomcat/webapps"
 
   tasks:
@@ -13,13 +13,13 @@
       git:
         repo: "{{ repo_url }}"
         dest: "{{ repo_dest }}"
-        version: "main"  # or branch you want
+        version: "main"
         force: yes
-        
+
     - name: Show repo_dest path
       debug:
         var: repo_dest
-      
+
     - name: Build WAR using Maven
       command: mvn clean package
       args:
@@ -36,9 +36,8 @@
         mode: '0644'
       delegate_to: "{{ target_host }}"
 
-   - name: Restart Tomcat service on target host
+    - name: Restart Tomcat service on target host
       ansible.builtin.systemd:
         name: tomcat
         state: restarted
       delegate_to: "{{ target_host }}"
-
