@@ -16,9 +16,9 @@
         version: "main"  # or branch you want
         force: yes
         
-  - name: Show repo_dest path
-    debug:
-      var: repo_dest
+    - name: Show repo_dest path
+      debug:
+        var: repo_dest
       
     - name: Build WAR using Maven
       command: mvn clean package
