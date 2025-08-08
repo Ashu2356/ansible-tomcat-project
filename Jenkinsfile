@@ -5,7 +5,7 @@ pipeline {
         stage('Run Ansible Playbook') {
             steps {
                 sh '''
-                    ansible-playbook -i inventory/hosts.ini inventory/build_and_deploy.yml
+                    ansible-playbook build_and_deploy.yml --check
 
                 '''
             }
