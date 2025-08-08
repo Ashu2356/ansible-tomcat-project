@@ -26,16 +26,13 @@
       debug:
         var: repo_dest
 
-   - name: Build WAR using Maven
-  command: mvn clean package -X
-  args:
-    chdir: "{{ repo_dest }}"
-  environment:
-    JAVA_HOME: "/usr/lib/jvm/java-17-amazon-corretto.x86_64"
-    PATH: "/usr/lib/jvm/java-17-amazon-corretto.x86_64/bin:{{ lookup('env','PATH') }}"
-  register: maven_build
-  failed_when: "'BUILD SUCCESS' not in maven_build.stdout"
-  
+    - name: Build WAR using Maven
+      command: mvn clean package
+      args:
+        chdir: "{{ repo_dest }}"
+      register: maven_build
+      failed_when: "'BUILD SUCCESS' not in maven_build.stdout"
+
     - name: Copy WAR file to target host
       ansible.builtin.copy:
         src: "{{ repo_dest }}/target/{{ war_file_name }}"
