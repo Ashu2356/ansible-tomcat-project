@@ -1,1 +1,40 @@
+---
+- name: Build WAR on workstation and deploy to target server
+  hosts: localhost
+  vars:
+    repo_url: "https://github.com/Ashu2356/project.git"
+    repo_dest: "/tmp/project"
+    war_file_name: "project.war"        # Adjust if your WAR name is different
+    target_host: "172.31.38.202"        # Replace with your target host/IP
+    target_tomcat_path: "/opt/tomcat/webapps"
+
+  tasks:
+    - name: Clone project repository on workstation
+      git:
+        repo: "{{ repo_url }}"
+        dest: "{{ repo_dest }}"
+        version: "main"  # or branch you want
+        force: yes
+
+    - name: Build WAR using Maven
+      command: mvn clean package
+      args:
+        chdir: "{{ repo_dest }}"
+      register: maven_build
+      failed_when: "'BUILD SUCCESS' not in maven_build.stdout"
+
+    - name: Copy WAR file to target host
+      ansible.builtin.copy:
+        src: "{{ repo_dest }}/target/{{ war_file_name }}"
+        dest: "{{ target_tomcat_path }}/{{ war_file_name }}"
+        owner: tomcat
+        group: tomcat
+        mode: '0644'
+      delegate_to: "{{ target_host }}"
+
+    - name: Restart Tomcat service on target host
+      ansible.builtin.systemd:
+        name: tomcat
+        state: restarted
+      delegate_to: "{{ target_host }}"
 
