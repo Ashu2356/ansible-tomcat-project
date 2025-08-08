@@ -1,1 +1,73 @@
+---
+- name: Build WAR on Ansible control node
+  hosts: build_server
+  tasks:
+    - name: Install Git, Java, Maven
+      package:
+        name:
+          - git
+          - java-17-amazon-corretto
+          - maven
+        state: present
+
+    - name: Clone project repository
+      git:
+        repo: "https://github.com/Ashu2356/project.git"
+        dest: "/tmp/project"
+        force: yes
+
+    - name: Build WAR file with Maven
+      command: mvn package
+      args:
+        chdir: /tmp/project
+
+    - name: Copy WAR file to files directory
+      copy:
+        src: "/tmp/project/target/*.war"
+        dest: "./files/"
+        remote_src: yes
+
+- name: Deploy WAR to target server
+  hosts: target_server
+  tasks:
+    - name: Install Java
+      package:
+        name: java-11-amazon-corretto
+        state: present
+
+    - name: Install unzip
+      package:
+        name: unzip
+        state: present
+
+    - name: Download Tomcat
+      get_url:
+        url: "https://dlcdn.apache.org/tomcat/tomcat-10/v10.1.44/bin/apache-tomcat-10.1.44.zip"
+        dest: /tmp/apache-tomcat.zip
+
+    - name: Extract Tomcat
+      unarchive:
+        src: /tmp/apache-tomcat.zip
+        dest: /opt/
+        remote_src: yes
+
+    - name: Rename Tomcat directory
+      command: mv /opt/apache-tomcat-10.1.44 /opt/tomcat
+      args:
+        removes: /opt/tomcat
+
+    - name: Copy WAR to Tomcat webapps
+      copy:
+        src: "./files/*.war"
+        dest: "/opt/tomcat/webapps/"
+        mode: '0644'
+
+    - name: Make Tomcat scripts executable
+      file:
+        path: "/opt/tomcat/bin"
+        recurse: yes
+        mode: '0755'
+
+    - name: Start Tomcat
+      command: /opt/tomcat/bin/startup.sh
 
