@@ -13,7 +13,7 @@
       git:
         repo: "{{ repo_url }}"
         dest: "{{ repo_dest }}"
-        version: "main"
+        version: "master"
         force: yes
 
     - name: Show repo_dest path
